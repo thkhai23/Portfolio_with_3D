@@ -1,24 +1,24 @@
-﻿import { NextRequest, NextResponse } from "next/server";	
-import { guestbookEntries } from "@/data/guestbook";	
-	
-interface RouteParams {	
-  params: Promise<{ id: string }>;	
-}	
-	
-// DELETE /api/guestbook/[id] — Xóa lời nhắn theo id	
-export async function DELETE(request: NextRequest, { params }: RouteParams) {	
-  const { id } = await params;	
-	
-  const index = guestbookEntries.findIndex((entry) => entry.id === id);	
-	
-  if (index === -1) {	
-    return NextResponse.json(	
-      { error: "Không tìm thấy lời nhắn" },	
-      { status: 404 }	
-    );	
-  }	
-	
-  const deleted = guestbookEntries.splice(index, 1)[0];	
-	
-  return NextResponse.json(deleted);	
-}	
+import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
+
+interface RouteParams {
+  params: Promise<{ id: string }>;
+}
+
+// DELETE /api/guestbook/[id] — Xóa lời nhắn theo id từ Supabase
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+
+  const { data, error } = await supabase
+    .from('guestbook')
+    .delete()
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 404 });
+  }
+
+  return NextResponse.json(data);
+}

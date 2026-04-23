@@ -81,126 +81,126 @@ export default function GuestbookPage() {
   }	
 	
   return (	
-    <div className="max-w-3xl mx-auto px-4 py-12">	
-      <h1 className="text-3xl font-bold mb-2">Sổ lưu bút</h1>	
-      <p className="text-gray-500 mb-8">	
-        Hãy để lại lời nhắn cho tôi nhé!	
+    <div className="max-w-3xl mx-auto px-4 py-12 relative z-10">	
+      <h1 className="text-4xl font-bold mb-2 text-white drop-shadow-[0_0_10px_#00f0ff]">Sổ lưu bút</h1>	
+      <p className="text-[#ff00ff] mb-8 font-medium">	
+        Hãy để lại dấu ấn của bạn trong không gian của tôi!	
       </p>	
 	
       {/* Form gửi lời nhắn */}	
       <form	
         onSubmit={handleSubmit}	
-        className="bg-gray-50 rounded-lg p-6 mb-8 space-y-4"	
+        className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 mb-10 space-y-4 pointer-events-auto shadow-[0_0_30px_rgba(0,0,0,0.4)]"	
       >	
         <div>	
           <label	
             htmlFor="name"	
-            className="block text-sm font-medium text-gray-700 mb-1"	
+            className="block text-sm font-medium text-[#00f0ff] mb-2"	
           >	
-            Tên của bạn	
+            Định danh (Tên của bạn)	
           </label>	
           <input	
             id="name"	
             type="text"	
             value={name}	
             onChange={(e) => setName(e.target.value)}	
-            placeholder="Nhập tên của bạn"	
+            placeholder="Nhập tên..."	
             required	
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none 
-focus:ring-2 focus:ring-blue-500"	
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none 
+focus:ring-2 focus:ring-[#00f0ff] text-white placeholder-gray-500"	
           />	
         </div>	
 	
         <div>	
           <label	
             htmlFor="message"	
-            className="block text-sm font-medium text-gray-700 mb-1"	
+            className="block text-sm font-medium text-[#00f0ff] mb-2"	
           >	
-            Lời nhắn	
+            Thông điệp	
           </label>	
           <textarea	
             id="message"	
             value={message}	
             onChange={(e) => setMessage(e.target.value)}	
-            placeholder="Viết lời nhắn của bạn..."	
+            placeholder="Viết lời nhắn..."	
             required	
             rows={3}	
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none 
-focus:ring-2 focus:ring-blue-500 resize-none"	
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none 
+focus:ring-2 focus:ring-[#00f0ff] text-white placeholder-gray-500 resize-none"	
           />	
         </div>	
 	
         <button	
           type="submit"	
           disabled={submitting || !name.trim() || !message.trim()}	
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 
-transition-colors disabled:opacity-50 disabled:cursor-not-allowed"	
+          className="w-full bg-[#00f0ff] text-black font-bold px-6 py-3 rounded-xl hover:bg-cyan-400 
+transition-all shadow-[0_0_15px_rgba(0,240,255,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"	
         >	
-          {submitting ? "Đang gửi..." : "Gửi lời nhắn"}	
+          {submitting ? "Đang truyền tải dữ liệu..." : "Gửi lời nhắn"}	
         </button>	
       </form>	
 	
       {/* Danh sách lời nhắn */}	
       {isLoading && (	
-        <div className="text-center py-8 text-gray-500">	
-          Đang tải sổ lưu bút...	
+        <div className="text-center py-8 text-[#00f0ff] animate-pulse">	
+          Đang nạp dữ liệu từ vũ trụ...	
         </div>	
       )}	
 	
       {error && (	
-        <div className="text-center py-8 text-red-500">Không thể tải dữ liệu</div>	
+        <div className="text-center py-8 text-red-500">Hệ thống gặp sự cố tải dữ liệu</div>	
       )}	
 	
       {!isLoading && !error && (	
-        <div className="space-y-4">	
-          <p className="text-sm text-gray-400">	
-            {entries.length} lời nhắn (Trang {currentPage}/{totalPages})	
+        <div className="space-y-6 pointer-events-auto">	
+          <p className="text-sm text-gray-400 font-mono">	
+            &gt; {entries.length} RECORDS_FOUND (PAGE {currentPage}/{totalPages})	
           </p>	
 	
           {paginatedEntries.map((entry) => (	
             <div	
               key={entry.id}	
-              className="border rounded-lg p-4 hover:shadow-sm transition-shadow"	
+              className="bg-white/5 backdrop-blur-md border border-white/5 rounded-2xl p-5 hover:border-white/20 transition-all"	
             >	
-              <div className="flex items-center justify-between mb-2">	
+              <div className="flex items-center justify-between mb-4">	
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="text-xs font-semibold">{entry.name.charAt(0).toUpperCase()}</AvatarFallback>
-                  </Avatar>
-                  <span className="font-semibold text-gray-800">	
+                  <div className="w-10 h-10 rounded-full bg-[#ff00ff]/20 border border-[#ff00ff]/30 flex items-center justify-center text-[#ff00ff] font-bold">
+                    {entry.name.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="font-bold text-white">	
                     {entry.name}	
                   </span>	
                 </div>
-                <div className="flex items-center gap-3">	
-                  <span className="text-xs text-gray-400">	
+                <div className="flex items-center gap-4">	
+                  <span className="text-[10px] text-gray-500 font-mono uppercase">	
                     {new Date(entry.createdAt).toLocaleDateString("vi-VN")}	
                   </span>	
                   <Dialog>
                     <DialogTrigger asChild>
                       <button	
                         disabled={deletingIds.has(entry.id)}	
-                        className="text-xs text-red-400 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"	
+                        className="text-xs text-gray-500 hover:text-red-500 transition-colors"	
                       >	
-                        {deletingIds.has(entry.id) ? "Đang xóa..." : "Xóa"}	
+                        XÓA
                       </button>	
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="bg-black border border-white/10 text-white">
                       <DialogHeader>
-                        <DialogTitle>Xác nhận xóa</DialogTitle>
-                        <DialogDescription>
-                          Bạn có chắc muốn xóa lời nhắn này?
+                        <DialogTitle className="text-white">Xác nhận xóa</DialogTitle>
+                        <DialogDescription className="text-gray-400">
+                          Thao tác này sẽ xóa vĩnh viễn dữ liệu khỏi không gian lưu trữ.
                         </DialogDescription>
                       </DialogHeader>
-                      <DialogFooter>
+                      <DialogFooter className="gap-2">
                         <DialogClose asChild>
-                          <button className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">Hủy</button>
+                          <button className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors">HỦY</button>
                         </DialogClose>
                         <DialogClose asChild>
                           <button 
                             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors" 
                             onClick={() => handleDelete(entry.id)}
                           >
-                            Xóa
+                            XÁC NHẬN
                           </button>
                         </DialogClose>
                       </DialogFooter>
@@ -208,7 +208,7 @@ transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   </Dialog>
                 </div>	
               </div>	
-              <p className="text-gray-600">{entry.message}</p>	
+              <p className="text-gray-300 italic leading-relaxed">"{entry.message}"</p>	
             </div>	
           ))}	
 	
