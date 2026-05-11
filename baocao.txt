@@ -1,0 +1,57 @@
+# TÀI LIỆU TỔNG QUAN DỰ ÁN: PORTFOLIO CÁ NHÂN TƯƠNG TÁC 3D
+
+## 1. TÓM TẮT DỰ ÁN (EXECUTIVE SUMMARY)
+
+Dự án Portfolio cá nhân tương tác 3D là một nền tảng Web thế hệ mới, phá bỏ giới hạn của các trang Web tĩnh truyền thống. Dự án được xây dựng với mục tiêu số hóa hồ sơ năng lực của sinh viên công nghệ theo phong cách "Immersive Storytelling" (Kể chuyện nhập vai). 
+
+Thông qua việc kết hợp đồ họa máy tính 3D trực tiếp trên trình duyệt (WebGL) và hệ quản trị dữ liệu đám mây (Supabase), dự án tạo ra một không gian nghệ thuật số sống động. Đây không chỉ là nơi giới thiệu thông tin mà còn là minh chứng thực tế cho khả năng làm chủ các công nghệ Web hiện đại, tư duy xử lý đồ họa và kỹ năng thiết kế hệ thống chuyên nghiệp.
+
+## 2. BỐI CẢNH & MỤC TIÊU
+
+### Bối cảnh
+Trong kỷ nguyên số, việc sở hữu một CV bản cứng hoặc trang web tĩnh đã trở nên bão hòa. Nhà tuyển dụng hiện nay có xu hướng tìm kiếm những ứng viên không chỉ có kiến thức chuyên môn mà còn có tư duy về UI/UX và khả năng ứng dụng các công nghệ tiên tiến để giải quyết bài toán trải nghiệm người dùng. Dự án này ra đời để khẳng định sự khác biệt trong việc "định vị bản thân" trên thị trường tuyển dụng.
+
+### Mục tiêu cốt lõi
+*   **Về phía người dùng:** Tạo ấn tượng thị giác mạnh mẽ (First Impression), cung cấp giao diện trực quan và tăng tính tương tác thông qua hệ thống Guestbook.
+*   **Về phía kỹ thuật:** Làm chủ kỹ thuật Render đồ họa 3D phức tạp (Shaders, Textures, Physics) mà vẫn đảm bảo hiệu năng Web tối ưu (FPS cao).
+*   **Về quản trị:** Xây dựng hệ thống quản lý dữ liệu tập trung (CMS-like) để cập nhật nội dung động mà không cần can thiệp vào mã nguồn.
+
+## 3. PHÂN TÍCH LỰA CHỌN CÔNG NGHỆ (TECH STACK RATIONALE)
+
+Dự án áp dụng mô hình kiến trúc hiện đại (Modern Web Stack) với các lựa chọn chiến lược:
+
+*   **Next.js 15 (App Router):** Nền tảng cốt lõi giúp tối ưu hóa hiệu năng và SEO mạnh mẽ thông qua cơ chế Server-side Rendering (SSR).
+*   **React Three Fiber & Drei:** Cầu nối giữa React và Three.js, cho phép quản lý không gian 3D dưới dạng các Component, giúp mã nguồn dễ bảo trì và tối ưu hóa bộ nhớ (Memory Management).
+*   **Supabase (BaaS):** Giải pháp Backend hiện đại cung cấp PostgreSQL, Authentication và khả năng cập nhật dữ liệu Real-time, giúp rút ngắn thời gian phát triển mà vẫn đảm bảo tiêu chuẩn bảo mật.
+*   **Tailwind CSS 4.0 & Framer Motion:** Kiến tạo giao diện phẳng (2D UI) mượt mà, đồng nhất với nhịp điệu của không gian 3D phía sau.
+
+## 4. PHẠM VI DỰ ÁN & CÁC TÍNH NĂNG CHÍNH
+
+*   **Hệ thống vũ trụ số (3D Galaxy Interface):** Tái hiện một không gian vũ trụ số với các thực thể (Mặt trời, Trái đất, Hành tinh) có thể tương tác xoay/thu phóng. Đây là điểm nhấn công nghệ, thể hiện tư duy sáng tạo và kỹ năng xử lý đồ họa Web.
+*   **Module Giới thiệu năng lực động:** 
+    *   **Kỹ năng (Skills):** Hiển thị danh mục công nghệ theo phân loại chuyên nghiệp.
+    *   **Dự án (Projects):** Danh sách sản phẩm kèm mô tả chi tiết, vai trò và kết quả, được quản lý động từ database.
+*   **Hệ thống Tương tác & Cộng đồng:**
+    *   **Guestbook:** Cho phép khách truy cập để lại lời nhắn bảo mật, tạo môi trường tương tác hai chiều.
+    *   **Contact Form:** Hệ thống gửi tin nhắn trực tiếp tới chủ sở hữu portfolio.
+
+## 5. THÁCH THỨC KỸ THUẬT & GIẢI PHÁP (TECHNICAL CHALLENGES)
+
+*   **Thách thức 1: Tối ưu hóa hiệu năng render (FPS Optimization)**
+    *   *Giải pháp:* Sử dụng kỹ thuật `Instance Rendering` và cấu hình các thuộc tính `args` trong hình học để giảm tải cho GPU. Tích hợp `OrbitControls` thông minh để người dùng tương tác mà không gây giật lag.
+*   **Thách thức 2: Quản lý tài nguyên đồ họa (Asset Loading)**
+    *   *Giải pháp:* Sử dụng `React Suspense` kết hợp với `useTexture` để xử lý tải tài nguyên bất đối xứng, đảm bảo người dùng không thấy màn hình lỗi khi đang tải các texture chất lượng cao của hành tinh.
+*   **Thách thức 3: Kết hợp Hybrid UI (2D/3D Integration)**
+    *   *Giải pháp:* Xử lý kỹ thuật chồng lớp (Z-index) và quản lý sự kiện chuột (Pointer Events) để đảm bảo giao diện 2D luôn rõ nét và không cản trở việc tương tác với không gian 3D phía sau.
+
+## 6. ĐIỂM NỔI BẬT & GIÁ TRỊ THỰC TIỄN
+
+1.  **Trải nghiệm người dùng (UX) dẫn đầu:** Sự kết hợp giữa 3D và Flat Design tạo nên phong cách độc đáo, không gây nhàm chán như các hồ sơ truyền thống.
+2.  **Quản trị nội dung thông minh:** Chủ sở hữu có thể cập nhật mọi thông tin thông qua Dashboard mà không cần biết code.
+3.  **Minh chứng năng lực thực tế:** Dự án là bằng chứng sống động nhất cho khả năng giải quyết các thách thức kỹ thuật khó: từ tối ưu tài nguyên đến bảo mật dữ liệu.
+
+## 7. ĐỊNH HƯỚNG MỞ RỘNG (ROADMAP)
+
+*   **Tích hợp AI Assistant:** Sử dụng LLM để tạo ra một "phiên bản số" tư vấn cho nhà tuyển dụng.
+*   **Hỗ trợ đa ngôn ngữ (i18n):** Mở rộng tiếp cận thị trường quốc tế với Tiếng Anh và Tiếng Việt.
+*   **Chế độ WebVR:** Cho phép tham quan portfolio thông qua các thiết bị thực tế ảo như Meta Quest.

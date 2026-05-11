@@ -4,11 +4,15 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/lib/supabase";
-import { createPostAction } from "./actions";
+import { createPostAction, deletePostAction } from "./actions";
+import { Trash2 } from "lucide-react";
 
 const CATEGORIES = ["Tất cả", "Công nghệ", "Học tập", "Cá nhân", "Cuộc sống"];
 
+import { useLanguage } from "@/lib/language-context";
+
 export default function BlogPage() {
+  const { t } = useLanguage();
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -84,14 +88,42 @@ export default function BlogPage() {
     
     setIsSubmitting(false);
   };
+
+  const handleDeletePost = async (e: React.MouseEvent, postId: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Convert to number if the string is numeric (to match DB integer types)
+    const targetId = isNaN(postId) ? postId : Number(postId);
+    console.log("Attempting to delete post ID:", targetId, "Type:", typeof targetId);
+    
+    const passwordInput = prompt(t("adminPassword"));
+    if (!passwordInput) return;
+    
+    if (confirm(t("confirmDelete"))) {
+      try {
+        const result = await deletePostAction(targetId, passwordInput);
+        console.log("Delete result:", result);
+        if (result.success) {
+          alert(result.message);
+          fetchPosts();
+        } else {
+          alert(result.message);
+        }
+      } catch (err) {
+        console.error("Delete error:", err);
+        alert("An error occurred while deleting the post.");
+      }
+    }
+  };
 	
   return (
     <div className="max-w-5xl mx-auto px-4 py-12 relative z-10">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
         <div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-[0_0_10px_#00f0ff]">Kho lưu trữ Blog</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-[0_0_10px_#00f0ff]">{t("blogArchive")}</h1>
           <p className="text-[#00f0ff] mt-2 font-medium">
-            {loading ? "Đang truy xuất dữ liệu..." : `Hệ thống ghi nhận ${filteredPosts.length} báo cáo [${selectedCategory}]`}
+            {loading ? t("loading") : `System found ${filteredPosts.length} reports [${selectedCategory}]`}
           </p>
         </div>
         
@@ -99,7 +131,7 @@ export default function BlogPage() {
           onClick={() => setShowForm(!showForm)}
           className="pointer-events-auto bg-[#ff00ff] text-white font-bold px-6 py-3 rounded-xl hover:bg-magenta-500 shadow-[0_0_15px_rgba(255,0,255,0.4)] transition-all"
         >
-          {showForm ? "HỦY LỆNH" : "+ THÊM BÀI VIẾT"}
+          {showForm ? t("cancel") : t("addPost")}
         </button>
       </div>
 
@@ -191,27 +223,37 @@ export default function BlogPage() {
           </div>
         ) : filteredPosts.length > 0 ? (
           currentPosts.map((post) => (
-            <Link key={post.id} href={`/blog/${post.slug}`} className="block group">
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-[#ff00ff]/50 transition-all duration-300 shadow-[0_0_20px_rgba(0,0,0,0.4)]">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <Badge className="bg-[#ff00ff]/20 text-[#ff00ff] border-[#ff00ff]/30">{post.author}</Badge>
-                    <Badge className="bg-[#00f0ff]/10 text-[#00f0ff] border-[#00f0ff]/20 font-mono text-[10px]">
-                      {post.category}
-                    </Badge>
+            <div key={post.id} className="relative group">
+              <Link href={`/blog/${post.slug}`} className="block">
+                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-[#ff00ff]/50 transition-all duration-300 shadow-[0_0_20px_rgba(0,0,0,0.4)]">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <Badge className="bg-[#ff00ff]/20 text-[#ff00ff] border-[#ff00ff]/30">{post.author}</Badge>
+                      <Badge className="bg-[#00f0ff]/10 text-[#00f0ff] border-[#00f0ff]/20 font-mono text-[10px]">
+                        {post.category}
+                      </Badge>
+                    </div>
+                    <span className="text-xs text-gray-500 font-mono">
+                      {new Date(post.created_at).toLocaleDateString("vi-VN")}
+                    </span>
                   </div>
-                  <span className="text-xs text-gray-500 font-mono">
-                    {new Date(post.created_at).toLocaleDateString("vi-VN")}
-                  </span>
+                  <h3 className="text-xl font-bold text-white group-hover:text-[#00f0ff] transition-colors capitalize mb-2">
+                    {post.title}
+                  </h3>
+                  <p className="text-gray-400 line-clamp-2 italic">
+                    "{post.excerpt}"
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-white group-hover:text-[#00f0ff] transition-colors capitalize mb-2">
-                  {post.title}
-                </h3>
-                <p className="text-gray-400 line-clamp-2 italic">
-                  "{post.excerpt}"
-                </p>
-              </div>
-            </Link>
+              </Link>
+              
+              <button 
+                onClick={(e) => handleDeletePost(e, post.id)}
+                className="absolute top-4 right-4 p-2 bg-red-500/20 text-red-500 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500 hover:text-white z-30 pointer-events-auto"
+                title="Xóa bài viết"
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
           ))
         ) : (
           <div className="text-center py-20 bg-white/5 rounded-2xl border border-dashed border-white/10">

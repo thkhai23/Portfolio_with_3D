@@ -13,6 +13,8 @@ export const metadata: Metadata = {
   description: "Website portfolio cá nhân — CTK46",	
 };	
 	
+import { LanguageProvider } from "@/lib/language-context";
+
 export default function RootLayout({	
   children,	
 }: Readonly<{	
@@ -21,12 +23,14 @@ export default function RootLayout({
   return (	
     <html lang="vi" className={cn("font-sans dark", geist.variable)} suppressHydrationWarning>	
       <body className="min-h-screen flex flex-col bg-transparent text-white overflow-x-hidden">	
-        <SpaceBackground />
-        <Navbar />	
-        <main className="flex-1 relative z-10 pointer-events-none">
-          {children}
-        </main>	
-        <Footer />	
+        <LanguageProvider>
+          <SpaceBackground />
+          <Navbar />	
+          <main className="flex-1 relative z-10 pointer-events-none">
+            {children}
+          </main>	
+          <Footer />	
+        </LanguageProvider>
       </body>	
     </html>	
   );	
